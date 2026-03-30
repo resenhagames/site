@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Koral Water Hero</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400&family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --deep:     #0d0a14;
+      --forest:   #130d20;
+      --emerald:  #1a1030;
+      --jade:     #5b289e;
+      --mint:     #8f73b2;
+      --aqua:     #92bedb;
+      --blue1:    #91a4ce;
+      --blue2:    #91b0d4;
+      --blue3:    #92bedb;
+      --purple:   #5b289e;
+      --purple2:  #8f73b2;
+      --lilac:    #dedae0;
+      --white:    #f4f2f8;
+      /* pixel game accent colors */
+      --px-green: #5ec45e;
+      --px-sky:   #5eb8e8;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--deep);
+      color: var(--lilac);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* pixel grain overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: .35;
+    }
+
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--jade); border-radius: 2px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.2rem 4rem;
+      background: rgba(13,10,20,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(145,160,206,.1);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: .8rem;
+    }
+    .nav-logo img {
+      height: 38px; width: auto; image-rendering: pixelated;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--lilac); opacity: .65; text-decoration: none;
+      font-weight: 600;
+      transition: opacity .25s, color .25s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--aqua); }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      background: var(--deep);
+    }
+
+    /* Animated pixel stars / floating particles */
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse at 20% 80%, rgba(91,40,158,.25) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(145,176,212,.12) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(91,40,158,.08) 0%, transparent 70%);
+    }
+
+    /* pixel scanline effect */
+    .hero-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,.06) 2px,
+        rgba(0,0,0,.06) 4px
+      );
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; max-width: 860px; padding: 8rem 2rem 4rem;
+      display: flex; flex-direction: column; align-items: center; gap: 1.6rem;
+    }
+
+    .hero-logo {
+      width: min(320px, 80vw);
+      image-rendering: pixelated;
+      filter: drop-shadow(0 0 40px rgba(91,40,158,.6)) drop-shadow(0 0 80px rgba(145,176,212,.2));
+      animation: logoFloat 4s ease-in-out infinite;
+    }
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    .hero-eyebrow {
+      font-size: .65rem; letter-spacing: .35em; text-transform: uppercase;
+      color: var(--blue1); font-weight: 700;
+      display: flex; align-items: center; gap: .8rem;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: ''; flex: 1; max-width: 50px; height: 1px;
+      background: linear-gradient(to right, transparent, var(--blue1));
+      opacity: .5;
+    }
+    .hero-eyebrow::after { background: linear-gradient(to left, transparent, var(--blue1)); }
+
+    .hero-tagline {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-weight: 300; line-height: 1.2;
+      color: var(--white);
+    }
+    .hero-tagline em { font-style: italic; color: var(--aqua); font-weight: 400; }
+
+    .hero-desc {
+      font-size: .95rem; line-height: 1.8;
+      color: var(--lilac); opacity: .8;
+      max-width: 520px;
+    }
+
+    .hero-badges {
+      display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center;
+    }
+    .badge {
+      padding: .3rem .9rem;
+      border: 1px solid rgba(145,160,206,.3);
+      border-radius: 2px;
+      font-size: .65rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--blue1); font-weight: 600;
+      background: rgba(91,40,158,.12);
+    }
+
+    .btn-play {
+      display: inline-flex; align-items: center; gap: .8rem;
+      padding: 1.1rem 3rem;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--blue2) 100%);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      position: relative; overflow: hidden;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: filter .3s, transform .2s;
+      box-shadow: 0 0 30px rgba(91,40,158,.4);
+    }
+    .btn-play:hover { filter: brightness(1.2); transform: translateY(-2px); box-shadow: 0 8px 40px rgba(91,40,158,.6); }
+    .btn-play svg { width: 16px; height: 16px; fill: currentColor; }
+
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 2; display: flex; flex-direction: column; align-items: center; gap: .4rem;
+      opacity: .4; animation: scrollBob 2.2s ease-in-out infinite;
+    }
+    .scroll-hint span { font-size: .58rem; letter-spacing: .2em; text-transform: uppercase; }
+    .scroll-hint svg { width: 16px; height: 16px; stroke: var(--lilac); fill: none; }
+    @keyframes scrollBob {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── SECTIONS SHARED ── */
+    section { padding: 6rem 4rem; position: relative; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      font-size: .62rem; letter-spacing: .32em; text-transform: uppercase;
+      color: var(--purple2); margin-bottom: .8rem; font-weight: 700;
+    }
+    h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 300; line-height: 1.2; color: var(--white); margin-bottom: .8rem;
+    }
+    h2 em { font-style: italic; color: var(--aqua); font-weight: 400; }
+    .divider {
+      width: 40px; height: 2px;
+      background: linear-gradient(to right, var(--purple), var(--blue2));
+      margin-bottom: 2.4rem;
+    }
+
+    /* ── SOBRE O JOGO ── */
+    #sobre { background: var(--forest); }
+    .sobre-grid {
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: start;
+    }
+    .sobre-info { display: flex; flex-direction: column; gap: 2rem; }
+
+    .info-block {}
+    .info-block h3 {
+      font-size: .65rem; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--blue1); font-weight: 700; margin-bottom: .5rem;
+    }
+    .info-block p {
+      font-size: .92rem; line-height: 1.75; opacity: .82;
+    }
+
+    .sobre-desc {
+      font-size: .95rem; line-height: 1.85; opacity: .82;
+    }
+    .sobre-desc p + p { margin-top: 1rem; }
+    .sobre-desc strong { color: var(--aqua); font-weight: 600; }
+
+    .sobre-meta {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.6rem;
+    }
+    .meta-item {
+      padding: 1rem 1.2rem;
+      border: 1px solid rgba(145,160,206,.15);
+      background: rgba(91,40,158,.08);
+    }
+    .meta-item .label {
+      font-size: .6rem; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--purple2); font-weight: 700; margin-bottom: .3rem;
+    }
+    .meta-item .value {
+      font-size: .88rem; color: var(--white); font-weight: 500;
+    }
+
+    /* ── MECÂNICAS / COMO JOGAR ── */
+    #mecanicas { background: var(--deep); }
+
+    .mecanicas-top {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-bottom: 4rem;
+    }
+
+    .loop-steps { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.2rem; }
+    .loop-step {
+      display: flex; align-items: flex-start; gap: 1.2rem;
+      padding: 1rem 1.2rem;
+      border-left: 2px solid rgba(145,160,206,.2);
+      transition: border-color .3s, background .3s;
+    }
+    .loop-step:hover { border-color: var(--blue1); background: rgba(91,40,158,.08); }
+    .loop-step-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: .7rem; color: var(--purple2); min-width: 1.8rem; padding-top: .15rem;
+    }
+    .loop-step-text { font-size: .88rem; line-height: 1.65; opacity: .85; }
+    .loop-step-text strong { color: var(--aqua); font-weight: 600; }
+
+    /* controles */
+    .controls-section {
+      border: 1px solid rgba(145,160,206,.12);
+      background: rgba(91,40,158,.06);
+      overflow: hidden;
+    }
+    .controls-header {
+      padding: 1.2rem 1.6rem;
+      background: rgba(91,40,158,.15);
+      border-bottom: 1px solid rgba(145,160,206,.1);
+    }
+    .controls-header h3 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: .7rem; color: var(--aqua); letter-spacing: .08em;
+    }
+    .controls-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 0;
+    }
+    .control-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .9rem 1.4rem;
+      border-bottom: 1px solid rgba(145,160,206,.06);
+      border-right: 1px solid rgba(145,160,206,.06);
+      transition: background .25s;
+    }
+    .control-item:hover { background: rgba(91,40,158,.1); }
+    .key {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 32px; height: 28px; padding: 0 .5rem;
+      background: rgba(145,160,206,.12);
+      border: 1px solid rgba(145,160,206,.3);
+      border-bottom: 2px solid rgba(145,160,206,.5);
+      border-radius: 3px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: .5rem; color: var(--blue1);
+      white-space: nowrap;
+    }
+    .control-desc {
+      font-size: .82rem; opacity: .8; line-height: 1.4;
+    }
+
+    /* mecanicas image */
+    .mecanicas-img-wrap {
+      position: relative; overflow: hidden;
+      border: 1px solid rgba(145,160,206,.12);
+    }
+    .mecanicas-img-wrap img {
+      width: 100%; display: block;
+      image-rendering: pixelated;
+      transition: transform .5s;
+    }
+    .mecanicas-img-wrap:hover img { transform: scale(1.03); }
+    .img-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: .8rem 1rem;
+      background: linear-gradient(to top, rgba(13,10,20,.95), transparent);
+      font-size: .62rem; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--blue1); font-weight: 600;
+    }
+
+    /* ── MÍDIA / SCREENSHOTS ── */
+    #midia { background: var(--forest); }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto auto;
+      gap: 1.2rem;
+      margin-top: 2.4rem;
+    }
+    .gallery-item {
+      position: relative; overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(145,160,206,.1);
+      transition: border-color .3s;
+    }
+    .gallery-item:hover { border-color: rgba(145,160,206,.4); }
+    .gallery-item.wide { grid-column: span 2; }
+    .gallery-item img {
+      width: 100%; display: block;
+      transition: transform .5s cubic-bezier(.4,0,.2,1), filter .5s;
+      filter: saturate(.9);
+      image-rendering: pixelated;
+    }
+    .gallery-item:hover img { transform: scale(1.03); filter: saturate(1.1); }
+    .gallery-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.2rem 1rem .7rem;
+      background: linear-gradient(to top, rgba(13,10,20,.95) 0%, transparent 100%);
+      font-size: .65rem; letter-spacing: .15em; text-transform: uppercase;
+      color: var(--blue1); font-weight: 600;
+    }
+    .gallery-caption::before {
+      content: ''; display: block; width: 20px; height: 1px;
+      background: var(--purple2); margin-bottom: .35rem;
+    }
+
+    /* video section */
+    .video-placeholder {
+      margin-top: 2.4rem;
+      border: 1px solid rgba(145,160,206,.15);
+      background: rgba(91,40,158,.06);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 1rem; padding: 4rem 2rem;
+      text-align: center;
+    }
+    .video-placeholder .play-icon {
+      width: 60px; height: 60px;
+      border: 2px solid rgba(145,160,206,.4);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .video-placeholder .play-icon svg { width: 24px; height: 24px; fill: var(--blue1); margin-left: 3px; }
+    .video-placeholder p { font-size: .8rem; opacity: .5; letter-spacing: .1em; }
+    .video-embed {
+      margin-top: 2.4rem;
+      border: 1px solid rgba(145,160,206,.15);
+      overflow: hidden;
+    }
+    .video-embed iframe {
+      width: 100%; aspect-ratio: 16/9; display: block; border: none;
+    }
+
+    /* ── EQUIPE ── */
+    #equipe { background: var(--deep); }
+    .equipe-grid {
+      display: flex; justify-content: center; gap: 5rem; flex-wrap: wrap;
+      margin-top: 3rem;
+    }
+    .credito-card {
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+      text-align: center;
+    }
+    .avatar-ring {
+      width: 150px; height: 150px; border-radius: 50%; padding: 3px;
+      background: linear-gradient(135deg, var(--purple) 0%, var(--blue2) 50%, var(--purple2) 100%);
+      box-shadow: 0 0 30px rgba(91,40,158,.25);
+      transition: box-shadow .4s;
+    }
+    .avatar-ring:hover { box-shadow: 0 0 50px rgba(146,190,219,.3); }
+    .avatar-inner {
+      width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+      background: var(--emerald);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .avatar-inner img {
+      width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+    }
+    .avatar-placeholder {
+      width: 100%; height: 100%; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(circle at 40% 35%, var(--purple), var(--emerald));
+      font-family: 'Press Start 2P', monospace;
+      font-size: 2rem; color: var(--blue1);
+    }
+    .credito-nome {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.25rem; font-weight: 700; color: var(--white);
+    }
+    .credito-linha {
+      width: 28px; height: 1px;
+      background: linear-gradient(to right, var(--purple2), var(--blue2));
+    }
+    .credito-role {
+      font-size: .62rem; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--blue1); font-weight: 700;
+    }
+    .credito-desc {
+      font-size: .8rem; line-height: 1.6; opacity: .65;
+      max-width: 200px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--deep);
+      border-top: 1px solid rgba(145,160,206,.1);
+      padding: 2.5rem 4rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo img { height: 30px; image-rendering: pixelated; opacity: .7; }
+    .footer-info { text-align: center; }
+    .footer-info p { font-size: .72rem; opacity: .4; letter-spacing: .08em; }
+    .footer-info .team { font-size: .7rem; opacity: .5; margin-top: .2rem; color: var(--blue1); }
+    .footer-links { display: flex; gap: 1.2rem; }
+    .footer-links a {
+      font-size: .65rem; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--blue1); opacity: .5; text-decoration: none;
+      transition: opacity .2s;
+    }
+    .footer-links a:hover { opacity: 1; }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(13,10,20,.95);
+      display: none; align-items: center; justify-content: center;
+      padding: 2rem;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw; max-height: 88vh;
+      image-rendering: pixelated;
+      box-shadow: 0 0 60px rgba(91,40,158,.4);
+    }
+    .lightbox-close {
+      position: absolute; top: 1.5rem; right: 2rem;
+      font-family: 'Press Start 2P', monospace;
+      font-size: .7rem; color: var(--lilac); opacity: .6;
+      cursor: pointer; background: none; border: none;
+      transition: opacity .2s;
+    }
+    .lightbox-close:hover { opacity: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 1rem 1.5rem; }
+      section { padding: 4.5rem 1.5rem; }
+      .sobre-grid, .mecanicas-top { grid-template-columns: 1fr; gap: 2.5rem; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-item.wide { grid-column: span 1; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+      .equipe-grid { gap: 2.5rem; }
+    }
+    @media (max-width: 500px) {
+      .nav-links { display: none; }
+      .controls-grid { grid-template-columns: 1fr; }
+      .sobre-meta { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕ fechar</button>
+  <img id="lightbox-img" src="" alt="" />
+</div>
+
+<!-- ── NAV ── -->
+<nav>
+  <div class="nav-logo">
+    <img src="logo.png" alt="Koral Water Hero" onerror="this.style.display='none'" />
+  </div>
+  <ul class="nav-links">
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#mecanicas">Mecânicas</a></li>
+    <li><a href="#midia">Mídia</a></li>
+    <li><a href="#equipe">Equipe</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════
+     HERO
+══════════════════════════ -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+
+    <img
+      class="hero-logo"
+      src="logo.png"
+      alt="Koral Water Hero"
+      onerror="this.outerHTML='<h1 style=\'font-family:Press Start 2P,monospace;font-size:clamp(1.4rem,4vw,2.8rem);color:#92bedb;letter-spacing:.05em;line-height:1.4\'>KORAL<br><span style=\'color:#8f73b2;font-size:.6em\'>WATER HERO</span></h1>'"
+    />
+
+    <div class="hero-eyebrow reveal">Resenha Games · GP SENAI Inovação 2026</div>
+
+    <p class="hero-tagline reveal">
+      Seja a <em>Guardiã das Águas</em><br />e salve o meio ambiente
+    </p>
+
+    <p class="hero-desc reveal">
+      Um jogo de plataforma 2D com temática ambiental — colete lixo, enfrente os monstros da Lixotech
+      e restaure os ecossistemas naturais.
+    </p>
+
+    <div class="hero-badges reveal">
+      <span class="badge">Plataforma 2D</span>
+      <span class="badge">Educativo</span>
+      <span class="badge">PC · Windows / Linux / Mac</span>
+      <span class="badge">Gratuito</span>
+    </div>
+
+    <!--
+      ── Substitua href="#" pelo link real quando disponível ──
+    -->
+    <a class="btn-play reveal" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      Jogar Agora
+    </a>
+
+  </div>
+  <div class="scroll-hint">
+    <span>Rolar</span>
+    <svg viewBox="0 0 24 24" stroke-width="1.5"><polyline points="6 9 12 15 18 9"/></svg>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     SOBRE O JOGO
+══════════════════════════ -->
+<section id="sobre">
+  <div class="section-inner">
+    <div class="sobre-grid">
+
+      <div class="reveal">
+        <p class="section-label">Sobre o Jogo</p>
+        <h2>O que é <em>Koral</em>?</h2>
+        <div class="divider"></div>
+
+        <div class="sobre-desc">
+          <p>
+            <strong>Koral Water Hero</strong> é um jogo de plataforma 2D educativo e social, desenvolvido
+            com o objetivo de conscientizar crianças e jovens sobre a importância do saneamento básico
+            e a preservação da água.
+          </p>
+          <p>
+            A protagonista é uma menina determinada e corajosa — uma Guardiã das Águas — que enfrenta
+            a corporação poluidora <strong>Lixotech</strong> e seus monstros para limpar e restaurar
+            os ecossistemas naturais.
+          </p>
+          <p>
+            Mais do que um jogo de pular plataformas, Koral é uma ferramenta de
+            <strong>conscientização ambiental</strong> e <strong>protagonismo feminino</strong>,
+            mostrando que meninas podem ser líderes de mudança em suas comunidades.
+          </p>
+        </div>
+
+        <div class="sobre-meta">
+          <div class="meta-item">
+            <div class="label">Gênero</div>
+            <div class="value">Plataforma 2D · Side-scroller</div>
+          </div>
+          <div class="meta-item">
+            <div class="label">Temática</div>
+            <div class="value">Ambiental · Educativo</div>
+          </div>
+          <div class="meta-item">
+            <div class="label">Plataforma</div>
+            <div class="value">PC — Windows 10/11, Linux, Mac</div>
+          </div>
+          <div class="meta-item">
+            <div class="label">Público-alvo</div>
+            <div class="value">8 a 15 anos · Educadores</div>
+          </div>
+          <div class="meta-item">
+            <div class="label">Equipe</div>
+            <div class="value">Resenha Games</div>
+          </div>
+          <div class="meta-item">
+            <div class="label">Acesso</div>
+            <div class="value">Gratuito · Free-to-Play</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal" style="display:flex;flex-direction:column;gap:1.4rem;">
+        <div class="info-block">
+          <h3>✦ Justificativa</h3>
+          <p>O projeto nasce da necessidade de educar e conscientizar crianças e jovens sobre a importância do saneamento básico e da preservação da água — temas essenciais para a sustentabilidade ambiental.</p>
+        </div>
+        <div class="info-block">
+          <h3>✦ O Problema</h3>
+          <p>Em um mundo onde os recursos hídricos estão cada vez mais escassos e contaminados, comunidades inteiras sofrem com a falta de saneamento básico. A Lixotech representa esse problema no jogo.</p>
+        </div>
+        <div class="info-block">
+          <h3>✦ Benefícios</h3>
+          <p>Ensina saneamento e preservação da água de forma lúdica. Promove protagonismo feminino, pensamento estratégico e responsabilidade ambiental — engajando socialmente através do entretenimento.</p>
+        </div>
+        <div class="info-block">
+          <h3>✦ Requisitos Mínimos</h3>
+          <p>Processador i5 6ª geração · 500 MB ROM · 4 GB RAM · Placa de vídeo integrada Intel Graphics 630</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     MECÂNICAS / COMO JOGAR
+══════════════════════════ -->
+<section id="mecanicas">
+  <div class="section-inner">
+
+    <div class="reveal">
+      <p class="section-label">Mecânicas &amp; Como Jogar</p>
+      <h2>Core Loop &amp; <em>Controles</em></h2>
+      <div class="divider"></div>
+    </div>
+
+    <div class="mecanicas-top">
+
+      <!-- Core Loop -->
+      <div class="reveal">
+        <p style="font-size:.88rem;line-height:1.75;opacity:.75;margin-bottom:1.4rem;">
+          <strong style="color:var(--aqua);">Objetivo:</strong> Coletar 100% dos lixos espalhados
+          em todas as fases para paralisar a Lixotech para sempre e restaurar os ecossistemas.
+        </p>
+        <div class="loop-steps">
+          <div class="loop-step">
+            <span class="loop-step-num">01</span>
+            <div class="loop-step-text"><strong>Explorar</strong> o mapa e encontrar focos de poluição</div>
+          </div>
+          <div class="loop-step">
+            <span class="loop-step-num">02</span>
+            <div class="loop-step-text"><strong>Coletar lixo</strong> — passe por cima dos resíduos para coletá-los automaticamente</div>
+          </div>
+          <div class="loop-step">
+            <span class="loop-step-num">03</span>
+            <div class="loop-step-text"><strong>Combater</strong> os monstros da Lixotech — atire ou desvie dos inimigos</div>
+          </div>
+          <div class="loop-step">
+            <span class="loop-step-num">04</span>
+            <div class="loop-step-text"><strong>Enfrentar o Chefão</strong> e derrotar o boss final de cada fase</div>
+          </div>
+          <div class="loop-step">
+            <span class="loop-step-num">05</span>
+            <div class="loop-step-text"><strong>Purificar a Fase</strong> e restaurar o ecossistema local</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Screenshot mecânica menus -->
+      <div class="mecanicas-img-wrap reveal">
+        <img src="mecanica_de_menus_interativos.png" alt="Menu interativo do jogo" />
+        <div class="img-caption">Menu Principal — Tela de Início</div>
+      </div>
+
+    </div>
+
+    <!-- Controles -->
+    <div class="controls-section reveal">
+      <div class="controls-header">
+        <h3>Controles do Jogo</h3>
+      </div>
+      <div class="controls-grid">
+        <div class="control-item">
+          <span class="key">A</span><span class="key" style="margin-left:-.3rem">D</span>
+          <span class="control-desc">Movimentar (esquerda / direita)</span>
+        </div>
+        <div class="control-item">
+          <span class="key">SPACE</span>&nbsp;<span style="font-size:.7rem;opacity:.5">ou</span>&nbsp;<span class="key">W</span>
+          <span class="control-desc">Pular</span>
+        </div>
+        <div class="control-item">
+          <span class="key">W</span>&nbsp;<span style="font-size:.7rem;opacity:.5">ou</span>&nbsp;<span class="key">SPACE</span>&nbsp;<span style="font-size:.65rem;opacity:.5">2×</span>
+          <span class="control-desc">Pulo duplo</span>
+        </div>
+        <div class="control-item">
+          <span class="key">SHIFT</span>&nbsp;+&nbsp;<span class="key">A/D</span>
+          <span class="control-desc">Dash (investida rápida)</span>
+        </div>
+        <div class="control-item">
+          <span class="key">🖱 LMB</span>&nbsp;<span class="key">F</span>&nbsp;<span class="key">J</span>
+          <span class="control-desc">Atirar projétil</span>
+        </div>
+        <div class="control-item">
+          <span class="key">ESC</span>
+          <span class="control-desc">Menu de Pause</span>
+        </div>
+        <div class="control-item">
+          <span style="font-size:1rem">🪧</span>
+          <span class="control-desc">Placas — informam como avançar no jogo</span>
+        </div>
+        <div class="control-item">
+          <span style="font-size:1rem">💣</span>
+          <span class="control-desc">Coletar lixo — passe por cima para coletar</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     MÍDIA — SCREENSHOTS
+══════════════════════════ -->
+<section id="midia">
+  <div class="section-inner">
+
+    <div class="reveal">
+      <p class="section-label">Mídia</p>
+      <h2>Gameplay <em>em Ação</em></h2>
+      <div class="divider"></div>
+      <p style="font-size:.88rem;opacity:.6;margin-bottom:.5rem;">Clique nas imagens para ampliar</p>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="gallery-item wide reveal" onclick="openLightbox('visao_de_gameplay_frase_1.png')">
+        <img src="visao_de_gameplay_frase_1.png" alt="Fase 1 — Visão de gameplay" />
+        <div class="gallery-caption">Fase 1 — Visão de Gameplay</div>
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('gameplay_frase_2.png')">
+        <img src="gameplay_frase_2.png" alt="Fase 2 — Gameplay" />
+        <div class="gallery-caption">Fase 2 — Gameplay</div>
+      </div>
+      <div class="gallery-item reveal" onclick="openLightbox('visao_de_jogo_do_chefao_final.png')">
+        <img src="visao_de_jogo_do_chefao_final.png" alt="Chefão Final" />
+        <div class="gallery-caption">Chefão Final</div>
+      </div>
+    </div>
+
+    <!-- Vídeo -->
+    <div style="margin-top:3rem;" class="reveal">
+      <p class="section-label" style="margin-bottom:1rem;">Vídeo de Divulgação</p>
+      <!--
+        ══ PARA VOCÊ: substitua VIDEO_ID pelo ID do seu vídeo no YouTube ══
+        Exemplo: se o link for https://www.youtube.com/watch?v=abc123
+        coloque: src="https://www.youtube.com/embed/abc123"
+
+        Se ainda não tiver, deixe o placeholder abaixo visível.
+      -->
+      <div class="video-placeholder" id="video-placeholder">
+        <div class="play-icon">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <p style="font-size:.75rem;opacity:.55;">Vídeo de divulgação em breve<br>
+          <span style="color:var(--blue1);font-size:.65rem;">Substitua este bloco pelo embed do YouTube quando disponível</span>
+        </p>
+      </div>
+
+      <!--
+      <div class="video-embed">
+        <iframe
+          src="https://www.youtube.com/embed/VIDEO_ID"
+          title="Koral Water Hero — Trailer"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+      -->
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     EQUIPE
+══════════════════════════ -->
+<section id="equipe">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-label">Equipe</p>
+      <h2>Quem Fez <em>Acontecer</em></h2>
+      <div class="divider"></div>
+      <p style="font-size:.9rem;line-height:1.75;opacity:.7;max-width:480px;margin-bottom:.5rem;">
+        Koral Water Hero é um projeto da <strong style="color:var(--aqua)">Resenha Games</strong>,
+        desenvolvido para o GP SENAI de Inovação 2026.
+      </p>
+    </div>
+
+    <div class="equipe-grid">
+
+      <div class="credito-card reveal">
+        <div class="avatar-ring">
+          <div class="avatar-inner">
+            <img
+              src="imagens/joao-vitor.jpg"
+              alt="João Vitor"
+              onerror="this.style.display='none';this.parentElement.querySelector('.avatar-placeholder').style.display='flex';"
+            />
+            <div class="avatar-placeholder" style="display:none;">J</div>
+          </div>
+        </div>
+        <p class="credito-nome">João Vitor</p>
+        <div class="credito-linha"></div>
+        <p class="credito-role">Programador &amp; QA</p>
+        <p class="credito-desc">Programação principal, mecânicas, funcionalidades, ajustes e refinamento do jogo.</p>
+      </div>
+
+      <div class="credito-card reveal">
+        <div class="avatar-ring">
+          <div class="avatar-inner">
+            <img
+              src="imagens/victor.png"
+              alt="Victor Hugo"
+              onerror="this.style.display='none';this.parentElement.querySelector('.avatar-placeholder').style.display='flex';"
+            />
+            <div class="avatar-placeholder" style="display:none;">V</div>
+          </div>
+        </div>
+        <p class="credito-nome">Victor Hugo</p>
+        <div class="credito-linha"></div>
+        <p class="credito-role">Top Level Designer</p>
+        <p class="credito-desc">Design visual, cenários, personagens, interfaces e roteiro narrativo do jogo.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-logo">
+    <img src="logo.png" alt="Koral" onerror="this.style.display='none'" />
+  </div>
+  <div class="footer-info">
+    <p>© 2026 Koral Water Hero · Resenha Games</p>
+    <p class="team">GP SENAI de Inovação · Todos os direitos reservados</p>
+  </div>
+  <div class="footer-links">
+    <a href="#sobre">Sobre</a>
+    <a href="#mecanicas">Mecânicas</a>
+    <a href="#midia">Mídia</a>
+    <a href="#equipe">Equipe</a>
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ── -->
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 70);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Lightbox
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+
+</body>
+</html>
