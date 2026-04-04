@@ -32,6 +32,7 @@
     html { scroll-behavior: smooth; }
 
     body {
+      
       background: var(--deep);
       color: var(--lilac);
       font-family: 'Montserrat', sans-serif;
@@ -505,6 +506,46 @@
       .controls-grid { grid-template-columns: 1fr; }
       .sobre-meta { grid-template-columns: 1fr; }
     }
+    /* Oculta containers que contenham links do Typebot (uso de :has moderno) */
+    div:has(a[href*="typebot.io"]) {
+      display: none !important;
+    }
+
+    /* Rodapé overlay grande que tampa o site */
+    .big-footer-overlay {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 50px; /* altura reduzida para 10px */
+      background: #242b31; /* azul sólido (sem transparência) */
+      color: var(--white);
+      z-index: 100000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0; /* remover padding para manter 10px exatos */
+      box-shadow: 0 -10px 60px rgba(0,0,0,0.6);
+      transition: transform .35s ease, opacity .35s ease;
+    }
+    .big-footer-overlay .content { max-width: 920px; text-align: center; }
+    .big-footer-overlay h2 { font-size: clamp(1.6rem, 3.5vw, 3rem); margin-bottom: 1rem; }
+    .big-footer-overlay p { font-size: 1rem; opacity: 1; margin-bottom: 1rem; }
+    .close-big-footer {
+      position: absolute;
+      top: 11px;
+      right: 12px;
+      background: none;
+      border: 2px solid rgba(255,255,255,0.12);
+      color: var(--lilac);
+      padding: .5rem .8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      backdrop-filter: blur(4px);
+    }
+    .big-footer-overlay.hidden { transform: translateY(100%); pointer-events: none; opacity: 0; }
   </style>
 </head>
 <body>
@@ -911,6 +952,39 @@
     if (e.target === this) closeLightbox();
   });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+
+</script>
+
+<!-- Typebot chat widget -->
+<script type="module">
+  import Typebot from 'https://cdn.jsdelivr.net/npm/@typebot.io/js@0/dist/web.js';
+
+  Typebot.initStandard({ typebot: "my-typebot-p5yi6ek" });
+</script>
+
+<typebot-standard style="width: 100%; height: 600px; "></typebot-standard>
+
+<script>
+  // Remove automaticamente anchors que apontem para typebot.io
+  setInterval(() => {
+    const el = document.querySelector('a[href*="typebot.io"]');
+    if (el) el.remove();
+  }, 500);
+</script>
+
+<!-- Rodapé overlay grande (tampa o site) -->
+<div id="bigFooter" class="big-footer-overlay" role="dialog" aria-modal="true">
+  <button class="close-big-footer" aria-label="Fechar rodapé"></button>
+  <div class="content"></div>
+</div>
+
+<script>
+  // Fechar rodapé overlay
+  document.querySelector('.close-big-footer')?.addEventListener('click', () => {
+    const el = document.getElementById('bigFooter');
+    if (el) el.classList.add('hidden');
+  });
 </script>
 
 </body>
